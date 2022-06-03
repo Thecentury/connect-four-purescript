@@ -205,7 +205,7 @@ buildGameTree playerToPlay' board' = do
                 nextMoves'
                 # map (impl maxDepth (currentDepth + 1) nextPlayer')
                 # sequence
-              let childrenWinners = map (\tree -> winnerToPlayer (treeValue tree).winner) children
+              let childrenWinners = map (\(Tree value _) -> winnerToPlayer value.winner) children
               let nodeWinner = playerMinimax player childrenWinners
               pure $ Tuple (WinnerInChildren nodeWinner) children
         let v = {
@@ -250,7 +250,8 @@ nextMove currentPlayer board = do
   let candidateThree =
         tree
         # treeChildren
-        # map (\child -> (treeValue child).board)
+        # map treeValue
+        # map _.board
         # randomMove
   pure $ candidateOne <|> candidateTwo <|> candidateThree
 

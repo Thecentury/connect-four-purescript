@@ -20,6 +20,7 @@ to generate this file without the comments in this block.
   , "maybe"
   , "prelude"
   , "transformers"
+  , "tuples"
   , "unfoldable"
   ]
 , packages = ./packages.dhall

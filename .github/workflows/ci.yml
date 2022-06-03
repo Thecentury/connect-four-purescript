@@ -12,10 +12,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: purescript-contrib/setup-purescript@main
+    - uses: actions/checkout@v2
       if: github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.ref == 'refs/heads/master'
 
     - name: Build
+      uses: purescript-contrib/setup-purescript@main
       run: |
         spago build
 

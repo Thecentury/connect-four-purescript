@@ -1,5 +1,4 @@
 name: CI
-uses: purescript-contrib/setup-purescript@v2.0.0
 
 # Trigger the workflow on push or pull request, but only for the master branch
 on:

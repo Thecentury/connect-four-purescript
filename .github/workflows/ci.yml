@@ -1,0 +1,27 @@
+name: CI
+uses: purescript-contrib/setup-purescript@v2.0.0
+
+# Trigger the workflow on push or pull request, but only for the master branch
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    name: spago build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: 
+        - actions/checkout@v2
+        - purescript-contrib/setup-purescript@main
+      if: github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.ref == 'refs/heads/master'
+
+    - name: Build
+      run: |
+        spago build
+
+    # - name: Test
+      # run: |
+        # cabal v2-test --enable-tests

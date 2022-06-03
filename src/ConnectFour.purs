@@ -235,15 +235,17 @@ nextMove currentPlayer board = do
   let definiteGuess =
         tree
         # treeChildren
-        # filter (\tree' -> winnerToPlayer (treeValue tree').winner == currentPlayer)
+        # map treeValue
+        # filter (\child -> winnerToPlayer child.winner == currentPlayer)
         # head
-        # map (\child -> Definite (treeValue child).board)
+        # map (\child -> Definite child.board)
   let candidateOne = definiteGuess
   let candidateTwo =
         tree
         # treeChildren
-        # filter (\tree' -> winnerToPlayer (treeValue tree').winner == B)
-        # map (\child -> (treeValue child).board)
+        # map treeValue
+        # filter (\child -> winnerToPlayer child.winner == B)
+        # map (\child -> child.board)
         # randomMove
   let candidateThree =
         tree

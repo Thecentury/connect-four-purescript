@@ -2,7 +2,7 @@ module Test.Main where
 
 import Prelude
 
-import ConnectFour (Board, Player(..), Winner(..), boardDiagonals, buildGameTree, configOfRowsColumns, configWithDepth, configWithWin, nextBoardFromMove, nextMove, nextMoves, tryAddToColumn, winner)
+import ConnectFour.Model (Board, Player(..), Winner(..), boardDiagonals, buildGameTree, configOfRowsColumns, configWithDepth, configWithWin, nextBoardFromMove, nextMove, nextMoves, tryAddToColumn, winner)
 import Control.Monad.Reader (runReader, runReaderT)
 import Data.Array as Array
 import Data.List as List

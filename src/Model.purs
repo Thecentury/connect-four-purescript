@@ -1,4 +1,4 @@
-module ConnectFour where
+module ConnectFour.Model where
 
 import Prelude
 

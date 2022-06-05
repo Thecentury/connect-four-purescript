@@ -2,7 +2,7 @@ module BoardComparison where
 
 import Prelude
 
-import ConnectFour (Player, Board)
+import ConnectFour.Model (Player, Board)
 import Data.List (List, zipWith)
 
 data CellDiff =

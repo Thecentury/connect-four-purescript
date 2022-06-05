@@ -5,7 +5,7 @@ import Prelude
 import Ansi.Codes (Color(..))
 import Ansi.Output (foreground, withGraphics)
 import BoardComparison (CellDiff(..), diffBoards)
-import ConnectFour (AIMove(..), Board, Config, Outcome(..), Player(..), boardOutcome, config, nextMove, nextPlayer, tryAddToBoard)
+import ConnectFour.Model (AIMove(..), Board, Config, Outcome(..), Player(..), boardOutcome, config, nextMove, nextPlayer, tryAddToBoard)
 import Control.Monad.Reader (ReaderT)
 import Data.Int (fromString)
 import Data.List ((..))

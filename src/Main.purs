@@ -2,7 +2,7 @@ module Main where
 
 import Prelude
 
-import ConnectFour (Config, Player(..), mkBoard)
+import ConnectFour.Model (Config, Player(..), mkBoard)
 import Control.Monad.Reader (runReaderT)
 import Effect (Effect)
 import Effect.Console (log)

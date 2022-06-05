@@ -7,28 +7,14 @@ import Ansi.Output (foreground, withGraphics)
 import BoardComparison (CellDiff(..), diffBoards)
 import ConnectFour (AIMove(..), Board, Config, Outcome(..), Player(..), boardOutcome, config, nextMove, nextPlayer, tryAddToBoard)
 import Control.Monad.Reader (ReaderT)
-import Data.Either (Either(..))
-import Data.Foldable (class Foldable, foldr)
 import Data.Int (fromString)
 import Data.List ((..))
 import Data.Maybe (Maybe(..))
-import Effect.Aff (Aff, makeAff, nonCanceler)
+import Effect.Aff (Aff)
 import Effect.Aff.Class (liftAff)
-import Effect.Class (liftEffect)
 import Effect.Exception.Unsafe (unsafeThrow)
-import Node.Encoding as Encoding
-import Node.Process as Process
 import Node.ReadLine (Interface)
-import Node.ReadLine as ReadLine
-import Node.Stream (writeString)
-import OwnPrelude (liftReader)
-
-question :: String -> Interface -> Aff String
-question message interface = makeAff go
-  where
-    -- go :: (Either Error a -> Effect Unit) -> Effect Canceler
-    go runAffFunction = nonCanceler <$
-      ReadLine.question message (runAffFunction <<< Right) interface
+import OwnPrelude (forM_, liftReader, putStr, putStrLn, question)
 
 readPlayerInput :: Interface -> Player -> ReaderT Config Aff Int
 readPlayerInput console player = do
@@ -53,25 +39,9 @@ playerKind _ = unsafeThrow "Invalid player B"
 
 --------------------------------------------------------------------------------
 
-putStr :: String -> Aff Unit
-putStr s = do
-  _ <- liftEffect $ writeString Process.stdout Encoding.ASCII s (\_ -> pure unit)
-  pure unit
-
-putStrLn :: String -> Aff Unit
-putStrLn s = putStr (s <> "\n")
-
 drawCell :: CellDiff -> Aff Unit
 drawCell (Unchanged p) = putStr $ show p
 drawCell (Changed p) = putStr $ withGraphics (foreground BrightRed) $ show p
-
--- todo move me to prelude
-mapM_ :: forall a b t m. Monad m => Foldable t => (a -> m b) -> t a -> m Unit
-mapM_ f = foldr c (pure unit)
-  where c x k = f x *> k
-
-forM_ :: forall a b t m. Monad m => Foldable t => t a -> (a -> m b) -> m Unit
-forM_ = flip mapM_
 
 drawDiffBoard :: Board -> Board -> ReaderT Config Aff Unit
 drawDiffBoard prev curr = do
@@ -88,6 +58,8 @@ drawDiffBoard prev curr = do
         forM_ (1 .. cfg.columns) $ putStr <<< show
         putStrLn ""
         putStrLn ""
+
+--------------------------------------------------------------------------------
 
 loopWithDiff :: Interface -> Player -> Board -> Board -> ReaderT Config Aff Unit
 loopWithDiff console player prevBoard board = do

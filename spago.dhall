@@ -30,6 +30,7 @@ to generate this file without the comments in this block.
   , "node-readline"
   , "node-streams"
   , "prelude"
+  , "random"
   , "spec"
   , "transformers"
   , "tuples"

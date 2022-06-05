@@ -2,19 +2,22 @@ module ConnectFour.Model where
 
 import Prelude
 
+import ConnectFour.Prelude (Tree(..), liftReader, safeSkip, treeChildren, treeValue, zipperFromList, zipperSelfAndRights, zipperToList, zipperWithFocus)
 import Control.Alt ((<|>))
 import Control.Monad.Reader (Reader, ReaderT, ask)
 import Data.Foldable (foldr, maximum, minimum)
 import Data.FunctorWithIndex (mapWithIndex)
-import Data.List (List(..), all, concat, filter, fromFoldable, head, null, reverse, take, transpose, (..))
+import Data.List (List(..), all, concat, filter, fromFoldable, head, null, reverse, take, transpose, (..), (!!))
 import Data.List as List
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Traversable (sequence)
 import Data.Tuple (Tuple(..))
 import Data.Unfoldable (replicate)
 import Effect.Aff (Aff)
+import Effect.Aff.Class (liftAff)
+import Effect.Class (liftEffect)
 import Effect.Exception.Unsafe (unsafeThrow)
-import ConnectFour.Prelude (Tree(..), liftReader, safeSkip, treeChildren, treeValue, zipperFromList, zipperSelfAndRights, zipperToList, zipperWithFocus)
+import Effect.Random (randomInt)
 
 type Config = {
   rows :: Int,
@@ -232,7 +235,6 @@ nextBoardFromMove :: AIMove -> Board
 nextBoardFromMove (Definite board) = board
 nextBoardFromMove (RandomGuess board) = board
 
--- todo define nextMove with randomness
 nextMove :: Player -> Board -> ReaderT Config Aff (Maybe AIMove)
 nextMove currentPlayer board = do
   tree <- liftReader $ buildGameTree (nextPlayer currentPlayer) board
@@ -243,7 +245,7 @@ nextMove currentPlayer board = do
         # filter (\child -> winnerToPlayer child.winner == currentPlayer)
         # head
         # map (\child -> Definite child.board)
-  let candidateOne = definiteGuess
+  let candidateOne = (pure definiteGuess) :: Aff (Maybe AIMove)
   let candidateTwo =
         tree
         # treeChildren
@@ -257,12 +259,15 @@ nextMove currentPlayer board = do
         # map treeValue
         # map _.board
         # randomMove
-  pure $ candidateOne <|> candidateTwo <|> candidateThree
+  liftAff $ candidateOne <|> candidateTwo <|> candidateThree
 
   where
-    randomMove :: List Board -> Maybe AIMove
-    randomMove Nil = Nothing
-    randomMove (Cons b _) = Just $ RandomGuess b
+    randomMove :: List Board -> Aff (Maybe AIMove)
+    randomMove Nil = pure Nothing
+    randomMove moves = do
+      index <- liftEffect $ randomInt 0 (List.length moves - 1)
+      let move = moves !! index
+      pure $ map RandomGuess $ move
 
 --------------------------------------------------------------------------------
 

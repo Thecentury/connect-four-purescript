@@ -3,7 +3,8 @@ module ConnectFour where
 import OwnPrelude
 import Prelude
 
-import Control.Monad.Reader (Reader, ask)
+import Control.Alt ((<|>))
+import Control.Monad.Reader (Reader, ReaderT, ask)
 import Data.Foldable (foldr, maximum, minimum)
 import Data.FunctorWithIndex (mapWithIndex)
 import Data.List (List(..), all, concat, filter, fromFoldable, head, null, reverse, take, transpose, (..))
@@ -12,8 +13,8 @@ import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Traversable (sequence)
 import Data.Tuple (Tuple(..))
 import Data.Unfoldable (replicate)
+import Effect.Aff (Aff)
 import Effect.Exception.Unsafe (unsafeThrow)
-import Control.Alt ((<|>))
 
 type Config = {
   rows :: Int,
@@ -229,9 +230,9 @@ nextBoardFromMove (Definite board) = board
 nextBoardFromMove (RandomGuess board) = board
 
 -- todo define nextMove with randomness
-nextMove :: Player -> Board -> Reader Config (Maybe AIMove)
+nextMove :: Player -> Board -> ReaderT Config Aff (Maybe AIMove)
 nextMove currentPlayer board = do
-  tree <- buildGameTree (nextPlayer currentPlayer) board
+  tree <- liftReader $ buildGameTree (nextPlayer currentPlayer) board
   let definiteGuess =
         tree
         # treeChildren

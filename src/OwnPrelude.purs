@@ -2,6 +2,8 @@ module OwnPrelude where
 
 import Prelude
 
+import Control.Monad.Reader (ReaderT, mapReaderT)
+import Data.Identity (Identity(..))
 import Data.List (List(..), drop)
 import Data.List as List
 import Data.Maybe (Maybe(..))
@@ -54,3 +56,6 @@ treeChildren :: forall a . Tree a -> List (Tree a)
 treeChildren (Tree _ cs) = cs
 
 --------------------------------------------------------------------------------
+
+liftReader :: forall m r b . Monad m => ReaderT r Identity b -> ReaderT r m b
+liftReader = mapReaderT (\(Identity v) -> pure v)

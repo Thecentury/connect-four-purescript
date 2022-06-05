@@ -14,7 +14,7 @@ import Effect.Aff (Aff)
 import Effect.Aff.Class (liftAff)
 import Effect.Exception.Unsafe (unsafeThrow)
 import Node.ReadLine (Interface)
-import OwnPrelude (forM_, liftReader, putStr, putStrLn, question)
+import ConnectFour.Prelude (forM_, liftReader, putStr, putStrLn, question)
 
 readPlayerInput :: Interface -> Player -> ReaderT Config Aff Int
 readPlayerInput console player = do

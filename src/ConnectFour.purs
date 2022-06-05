@@ -14,7 +14,7 @@ import Data.Tuple (Tuple(..))
 import Data.Unfoldable (replicate)
 import Effect.Aff (Aff)
 import Effect.Exception.Unsafe (unsafeThrow)
-import OwnPrelude (Tree(..), liftReader, safeSkip, treeChildren, treeValue, zipperFromList, zipperSelfAndRights, zipperToList, zipperWithFocus)
+import ConnectFour.Prelude (Tree(..), liftReader, safeSkip, treeChildren, treeValue, zipperFromList, zipperSelfAndRights, zipperToList, zipperWithFocus)
 
 type Config = {
   rows :: Int,

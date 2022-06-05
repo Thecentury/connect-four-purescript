@@ -1,4 +1,4 @@
-module OwnPrelude where
+module ConnectFour.Prelude where
 
 import Prelude
 

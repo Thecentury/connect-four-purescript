@@ -9,7 +9,7 @@ import Data.List as List
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Aff (launchAff_)
-import OwnPrelude (treeChildren, treeValue)
+import ConnectFour.Prelude (treeChildren, treeValue)
 import Test.Spec (describe, it)
 import Test.Spec.Assertions (fail, shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)

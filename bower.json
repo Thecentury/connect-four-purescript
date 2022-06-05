@@ -1,0 +1,25 @@
+{
+  "name": "connect-four-purescript",
+  "homepage": "https://github.com/Thecentury/connect-four-purescript",
+  "authors": [
+    "Mikhail Brinchuk <thecentury@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "keywords": [
+    "connect-four",
+    "purescript"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "purescript-spec": "^7.0.0"
+  }
+}

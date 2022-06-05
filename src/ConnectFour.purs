@@ -1,6 +1,5 @@
 module ConnectFour where
 
-import OwnPrelude
 import Prelude
 
 import Control.Alt ((<|>))
@@ -15,6 +14,7 @@ import Data.Tuple (Tuple(..))
 import Data.Unfoldable (replicate)
 import Effect.Aff (Aff)
 import Effect.Exception.Unsafe (unsafeThrow)
+import OwnPrelude (Tree(..), liftReader, safeSkip, treeChildren, treeValue, zipperFromList, zipperSelfAndRights, zipperToList, zipperWithFocus)
 
 type Config = {
   rows :: Int,
@@ -100,23 +100,21 @@ boardDiagonals board = do
 winnerInRow :: BoardRow -> Reader Config (Maybe Player)
 winnerInRow row = do
   cfg <- config
-  let toWin = cfg.win
-  pure $ impl toWin (Tuple B 0) row
+  pure $ impl cfg.win (Tuple B 0) row
   where
     impl :: Int -> (Tuple Player Int) -> List Player -> Maybe Player
-    impl toWin (Tuple player count) Nil = if count == toWin then Just player else Nothing
-    impl toWin (Tuple player count) (Cons x xs) = 
-      if x == player then 
-        impl toWin (Tuple player (count + 1)) xs 
-      else 
-        impl toWin (Tuple (nextPlayer player) 0) xs
+    impl _ _ Nil = Nothing
+    impl toWin _ (Cons B rest) = impl toWin (Tuple B 1) rest
+    impl toWin (Tuple prev count) (Cons player _) | player == prev && count + 1 >= toWin = Just player
+    impl toWin (Tuple prev count) (Cons player rest) | player == prev = impl toWin (Tuple player (count + 1)) rest
+    impl toWin _ (Cons player rest) = impl toWin (Tuple player 1) rest
 
 winner :: Board -> Reader Config (Maybe Player)
 winner board = do
   diagonals <- boardDiagonals board
-  let toSearch = concat $ fromFoldable [boardRows board, boardColumns board, diagonals]
+  let toSearch = (boardRows board) <> (boardColumns board) <> diagonals
   winners <- sequence $ (map winnerInRow) $ toSearch
-  pure $ fromMaybe Nothing (maximum winners)
+  pure $ head $ List.catMaybes winners
 
 isFullColumn :: Column -> Boolean
 isFullColumn column = head column /= Just B

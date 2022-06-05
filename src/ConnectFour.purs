@@ -162,6 +162,11 @@ data Winner =
   | FoundWinner Player
   | WinnerInChildren Player
 
+instance showWinner :: Show Winner where
+  show DepthExhausted = "Depth exhausted"
+  show (FoundWinner player) = "Winner: " <> show player
+  show (WinnerInChildren player) = "Winner in children: " <> show player
+
 derive instance eqWinner :: Eq Winner
 
 winnerToPlayer :: Winner -> Player
